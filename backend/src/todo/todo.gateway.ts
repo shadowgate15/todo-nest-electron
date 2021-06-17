@@ -1,11 +1,23 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+  OnGatewayInit,
+} from '@nestjs/websockets';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { Logger } from '@nestjs/common';
 
-@WebSocketGateway()
-export class TodoGateway {
+@WebSocketGateway(4001)
+export class TodoGateway implements OnGatewayInit {
+  private logger: Logger = new Logger('TodoGateway');
+
   constructor(private readonly todoService: TodoService) {}
+
+  afterInit(server: any) {
+    this.logger.log('Initialized');
+  }
 
   @SubscribeMessage('createTodo')
   create(@MessageBody() createTodoDto: CreateTodoDto) {

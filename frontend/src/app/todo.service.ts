@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
 import { Todo } from './todo';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
+  todos: Todo[] = [
+    { id: 1, name: 'This is the first todo', completed: false },
+    { id: 2, name: 'this is the second todo', completed: false },
+  ];
+
   constructor() {}
 
-  getTodos(): Observable<Todo[]> {
-    const TODOS: Todo[] = [
-      { id: 1, name: 'This is the first todo', completed: false },
-      { id: 2, name: 'this is the second todo', completed: false },
-    ];
+  getTodos(): Todo[] {
+    return this.todos;
+  }
 
-    const todos = of(TODOS);
-
-    return todos;
+  addTodo(todo: Todo) {
+    this.todos.push(todo);
   }
 }

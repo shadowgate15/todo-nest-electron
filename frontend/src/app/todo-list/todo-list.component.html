@@ -1,3 +1,13 @@
 <ul class="todos">
   <li *ngFor="let todo of todos"> {{todo.name}} </li>
 </ul>
+
+<form [formGroup]="addForm" (ngSubmit)="onAddTodo()">
+  <div>
+    <label for="name">
+      Todo
+    </label>
+    <input id="name" type="text" formControlName="name">
+    <button class="button" type="submit">Add</button>
+  </div>
+</form>

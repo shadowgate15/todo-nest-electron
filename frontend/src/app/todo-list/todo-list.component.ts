@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { Todo } from '../todo';
 import { TodoService } from '../todo.service';
 
@@ -10,13 +11,26 @@ import { TodoService } from '../todo.service';
 export class TodoListComponent implements OnInit {
   todos: Todo[] = [];
 
-  constructor(private todoService: TodoService) {}
+  addForm = this.formBuilder.group({
+    name: '',
+    completed: false,
+  });
+
+  constructor(
+    private todoService: TodoService,
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.getTodos();
   }
 
   getTodos(): void {
-    this.todoService.getTodos().subscribe((todos) => (this.todos = todos));
+    this.todos = this.todoService.getTodos();
+  }
+
+  onAddTodo(): void {
+    this.todoService.addTodo(this.addForm.value);
+    this.addForm.reset();
   }
 }

@@ -26,11 +26,18 @@ export class TodoListComponent implements OnInit {
   }
 
   getTodos(): void {
-    this.todos = this.todoService.getTodos();
+    this.todoService.getTodos().subscribe((todos: any) => {
+      console.log('subscription response: ', todos);
+      this.todos = todos;
+    });
+
+    console.log(this.todos);
   }
 
   onAddTodo(): void {
-    this.todoService.addTodo(this.addForm.value);
+    this.todoService
+      .addTodo(this.addForm.value)
+      .subscribe((todo) => this.todos.push(todo));
     this.addForm.reset();
   }
 }

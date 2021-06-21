@@ -1,22 +1,33 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import * as io from 'socket.io-client';
 import { Todo } from './todo';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
-  todos: Todo[] = [
-    { id: 1, name: 'This is the first todo', completed: false },
-    { id: 2, name: 'this is the second todo', completed: false },
-  ];
+  uri = 'ws://localhost:4000';
 
-  constructor() {}
+  socket: any;
 
-  getTodos(): Todo[] {
-    return this.todos;
+  constructor() {
+    this.socket = io(this.uri);
   }
 
-  addTodo(todo: Todo) {
-    this.todos.push(todo);
+  getTodos(): Observable<Todo[]> {
+    return new Observable(($: any) =>
+      this.socket.emit('findAllTodo', (response: Todo[]) => {
+        $.next(response);
+      })
+    );
+  }
+
+  addTodo(todo: Todo): Observable<Todo> {
+    return new Observable(($: any) =>
+      this.socket.emit('createTodo', todo, (response: Todo) => {
+        $.next(response);
+      })
+    );
   }
 }

@@ -21,20 +21,20 @@ let TodoService = class TodoService {
     constructor(todoModel) {
         this.todoModel = todoModel;
     }
-    create(createTodoDto) {
+    async create(createTodoDto) {
         const createdTodo = new this.todoModel(createTodoDto);
         return createdTodo.save();
     }
-    findAll() {
+    async findAll() {
         return this.todoModel.find().exec();
     }
-    findOne(id) {
+    async findOne(id) {
         return this.todoModel.findById(id).exec();
     }
-    update(id, updateTodoDto) {
+    async update(id, updateTodoDto) {
         return this.todoModel.findByIdAndUpdate(id, updateTodoDto).exec();
     }
-    remove(id) {
+    async remove(id) {
         return this.todoModel.findByIdAndDelete(id).exec();
     }
 };

@@ -11,13 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodoGateway = void 0;
+const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
-const todo_service_1 = require("./todo.service");
+const socket_io_1 = require("socket.io");
 const create_todo_dto_1 = require("./dto/create-todo.dto");
 const update_todo_dto_1 = require("./dto/update-todo.dto");
-const common_1 = require("@nestjs/common");
+const todo_service_1 = require("./todo.service");
 let TodoGateway = class TodoGateway {
     constructor(todoService) {
         this.todoService = todoService;
@@ -26,58 +28,62 @@ let TodoGateway = class TodoGateway {
     afterInit(server) {
         this.logger.log('Initialized');
     }
-    create(createTodoDto) {
+    async create(createTodoDto) {
         return this.todoService.create(createTodoDto);
     }
-    findAll() {
+    async findAll() {
         return this.todoService.findAll();
     }
-    findOne(id) {
+    async findOne(id) {
         return this.todoService.findOne(id);
     }
-    update(updateTodoDto) {
-        return this.todoService.update(updateTodoDto.id, updateTodoDto);
+    async update(updateTodoDto) {
+        return this.todoService.update(updateTodoDto._id, updateTodoDto);
     }
-    remove(id) {
+    async remove(id) {
         return this.todoService.remove(id);
     }
 };
+__decorate([
+    websockets_1.WebSocketServer(),
+    __metadata("design:type", typeof (_a = typeof socket_io_1.Server !== "undefined" && socket_io_1.Server) === "function" ? _a : Object)
+], TodoGateway.prototype, "server", void 0);
 __decorate([
     websockets_1.SubscribeMessage('createTodo'),
     __param(0, websockets_1.MessageBody()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_todo_dto_1.CreateTodoDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TodoGateway.prototype, "create", null);
 __decorate([
     websockets_1.SubscribeMessage('findAllTodo'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TodoGateway.prototype, "findAll", null);
 __decorate([
     websockets_1.SubscribeMessage('findOneTodo'),
     __param(0, websockets_1.MessageBody()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
 ], TodoGateway.prototype, "findOne", null);
 __decorate([
     websockets_1.SubscribeMessage('updateTodo'),
     __param(0, websockets_1.MessageBody()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_todo_dto_1.UpdateTodoDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TodoGateway.prototype, "update", null);
 __decorate([
     websockets_1.SubscribeMessage('removeTodo'),
     __param(0, websockets_1.MessageBody()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
 ], TodoGateway.prototype, "remove", null);
 TodoGateway = __decorate([
-    websockets_1.WebSocketGateway(4001),
+    websockets_1.WebSocketGateway(),
     __metadata("design:paramtypes", [todo_service_1.TodoService])
 ], TodoGateway);
 exports.TodoGateway = TodoGateway;

@@ -1,16 +1,21 @@
+import { Logger } from '@nestjs/common';
 import {
-  WebSocketGateway,
-  SubscribeMessage,
   MessageBody,
   OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
-import { TodoService } from './todo.service';
+import { Server } from 'socket.io';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { Logger } from '@nestjs/common';
+import { TodoService } from './todo.service';
 
-@WebSocketGateway(4001)
+@WebSocketGateway()
 export class TodoGateway implements OnGatewayInit {
+  @WebSocketServer()
+  server: Server;
+
   private logger: Logger = new Logger('TodoGateway');
 
   constructor(private readonly todoService: TodoService) {}
@@ -20,27 +25,27 @@ export class TodoGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('createTodo')
-  create(@MessageBody() createTodoDto: CreateTodoDto) {
+  async create(@MessageBody() createTodoDto: CreateTodoDto) {
     return this.todoService.create(createTodoDto);
   }
 
   @SubscribeMessage('findAllTodo')
-  findAll() {
+  async findAll() {
     return this.todoService.findAll();
   }
 
   @SubscribeMessage('findOneTodo')
-  findOne(@MessageBody() id: number) {
+  async findOne(@MessageBody() id: string) {
     return this.todoService.findOne(id);
   }
 
   @SubscribeMessage('updateTodo')
-  update(@MessageBody() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(updateTodoDto.id, updateTodoDto);
+  async update(@MessageBody() updateTodoDto: UpdateTodoDto) {
+    return this.todoService.update(updateTodoDto._id, updateTodoDto);
   }
 
   @SubscribeMessage('removeTodo')
-  remove(@MessageBody() id: number) {
+  async remove(@MessageBody() id: string) {
     return this.todoService.remove(id);
   }
 }

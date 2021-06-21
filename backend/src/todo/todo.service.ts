@@ -9,25 +9,25 @@ import { Todo, TodoDocument } from './schemas/todo.schema';
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
 
-  create(createTodoDto: CreateTodoDto) {
+  async create(createTodoDto: CreateTodoDto): Promise<Todo> {
     const createdTodo = new this.todoModel(createTodoDto);
 
     return createdTodo.save();
   }
 
-  findAll() {
+  async findAll(): Promise<Todo[]> {
     return this.todoModel.find().exec();
   }
 
-  findOne(id: number) {
+  async findOne(id: string): Promise<Todo> {
     return this.todoModel.findById(id).exec();
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
+  async update(id: string, updateTodoDto: UpdateTodoDto) {
     return this.todoModel.findByIdAndUpdate(id, updateTodoDto).exec();
   }
 
-  remove(id: number) {
+  async remove(id: string) {
     return this.todoModel.findByIdAndDelete(id).exec();
   }
 }

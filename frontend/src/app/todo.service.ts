@@ -30,4 +30,12 @@ export class TodoService {
       })
     );
   }
+
+  updateTodo(todo: Todo): Observable<Todo> {
+    return new Observable(($: any) =>
+      this.socket.emit('updateTodo', todo, (response: Todo) => {
+        $.next(response);
+      })
+    );
+  }
 }

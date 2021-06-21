@@ -1,13 +1,20 @@
 <ul class="todos">
-  <li *ngFor="let todo of todos"> {{todo.name}} </li>
+  <li *ngFor="let todo of todos" [class.completed]="todo.completed">
+    <input
+      type="checkbox"
+      id="{{ todo._id }}-complete"
+      value="{{ todo._id }}"
+      [checked]="todo.completed"
+      (click)="onToggleCompletion($event)"
+    />
+    <label for="{{ todo._id }}-complete"> {{ todo.name }} </label>
+  </li>
 </ul>
 
 <form [formGroup]="addForm" (ngSubmit)="onAddTodo()">
   <div>
-    <label for="name">
-      Todo
-    </label>
-    <input id="name" type="text" formControlName="name">
+    <label for="name"> Todo </label>
+    <input id="name" type="text" formControlName="name" />
     <button class="button" type="submit">Add</button>
   </div>
 </form>

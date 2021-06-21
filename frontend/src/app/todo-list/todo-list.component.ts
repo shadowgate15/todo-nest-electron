@@ -26,18 +26,33 @@ export class TodoListComponent implements OnInit {
   }
 
   getTodos(): void {
-    this.todoService.getTodos().subscribe((todos: any) => {
-      console.log('subscription response: ', todos);
+    this.todoService.getTodos().subscribe((todos: Array<Todo>) => {
+      console.log(todos);
       this.todos = todos;
     });
-
-    console.log(this.todos);
   }
 
   onAddTodo(): void {
     this.todoService
       .addTodo(this.addForm.value)
-      .subscribe((todo) => this.todos.push(todo));
+      .subscribe((todo: Todo) => this.todos.push(todo));
     this.addForm.reset();
+  }
+
+  onToggleCompletion(event: MouseEvent): void {
+    const todo: Todo = this.todos.find((todo: Todo) => todo._id === (event.target as HTMLInputElement).value) as Todo;
+    // toggle todo completion state
+    todo.completed = !todo.completed;
+
+    console.log(todo);
+
+    this.todoService
+      .updateTodo(todo)
+      .subscribe((todo: Todo) => {
+        this.todos.forEach((elem: Todo) => {
+          if (elem._id === todo._id) return todo;
+          return elem;
+        });
+      });
   }
 }
